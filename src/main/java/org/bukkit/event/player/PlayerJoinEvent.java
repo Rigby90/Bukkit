@@ -7,10 +7,12 @@ import org.bukkit.entity.Player;
  */
 public class PlayerJoinEvent extends PlayerEvent {
     private String joinMessage;
+    private boolean newPlayer;
 
-    public PlayerJoinEvent(Player playerJoined, String joinMessage) {
+    public PlayerJoinEvent(Player playerJoined, String joinMessage, boolean newPlayer) {
         super(Type.PLAYER_JOIN, playerJoined);
         this.joinMessage = joinMessage;
+        this.newPlayer = newPlayer;
     }
 
     /**
@@ -29,5 +31,14 @@ public class PlayerJoinEvent extends PlayerEvent {
      */
     public void setJoinMessage(String joinMessage) {
         this.joinMessage = joinMessage;
+    }
+
+    /**
+     * Gets whether the Player that is joining is new to the server.
+     *
+     * @return Boolean, true if the player is new to the server and doesn't have a player.dat
+     */
+    public boolean isNewPlayer() {
+        return this.newPlayer;
     }
 }
