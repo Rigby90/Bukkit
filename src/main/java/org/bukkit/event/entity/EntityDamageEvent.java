@@ -10,8 +10,10 @@ import org.bukkit.event.Event;
 public class EntityDamageEvent extends EntityEvent implements Cancellable {
 
     private int damage;
+    private int actualDamage;
     private boolean cancelled;
     private DamageCause cause;
+    private boolean critical = false;
 
     public EntityDamageEvent(Entity damagee, DamageCause cause, int damage) {
         this(Event.Type.ENTITY_DAMAGE, damagee, cause, damage);
@@ -20,7 +22,7 @@ public class EntityDamageEvent extends EntityEvent implements Cancellable {
     protected EntityDamageEvent(Event.Type type, Entity damagee, DamageCause cause, int damage) {
         super(type, damagee);
         this.cause = cause;
-        this.damage = damage;
+        setDamage(damage);
 
         damagee.setLastDamageCause(this);
     }
@@ -49,6 +51,26 @@ public class EntityDamageEvent extends EntityEvent implements Cancellable {
      */
     public void setDamage(int damage) {
         this.damage = damage;
+        recalculateDamage();
+    }
+
+    /**
+     * Gets whether this attack is a critical attack or not.
+     *
+     * @return Whether the damage is the result of a critical hit.
+     */
+    public boolean getCritical() {
+        return this.critical;
+    }
+
+    /**
+     * Sets whether this attack is a critical attack or not.
+     *
+     * @param critical Whether the attack is a critical or not.
+     */
+    public void setCritical(boolean critical) {
+        this.critical = critical;
+        recalculateDamage();
     }
 
     /**
@@ -58,6 +80,13 @@ public class EntityDamageEvent extends EntityEvent implements Cancellable {
      */
     public DamageCause getCause() {
         return cause;
+    }
+
+    /**
+     * Recalculate the actual damage that will be done to the entity.
+     */
+    private void recalculateDamage() {
+        this.actualDamage = (int) (this.damage * 1.5) + 1; // TODO: Add mitigation
     }
 
     /**
